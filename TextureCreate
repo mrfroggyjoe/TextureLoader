@@ -1,0 +1,100 @@
+import java.io.IOException;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
+ 
+public class TextureCreate {
+     
+    /** The texture that will hold the image details */
+    private static Texture texture;
+     
+
+    private static void initGL() {
+
+ 
+        GL11.glEnable(GL11.GL_TEXTURE_2D);               
+         
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);          
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+ 
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0,  DisplaySize.Xlength, DisplaySize.Ylength, 0, 1, -1);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+    }
+     
+    /**
+     * Initialise resources
+     */
+    public static void init() {
+         
+        try {
+            // load texture from PNG file
+            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("src//source//frog3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+ 
+    /**
+     * draw a quad with the image on it
+     */
+    
+    
+    
+    public static void render(int XS,int XE,int YS,int YE ,    float pxs,float pxe, float pys, float pye) {
+  
+    	
+    	initGL();
+        
+        init();
+        
+        int x2;
+    	int x1;
+    	int y1;
+    	int y2;
+    	float xsp = pxs/texture.getImageWidth();
+    	float xep = pxe/texture.getImageWidth();
+    	float ysp = pys/texture.getImageHeight();
+    	float yep = pye/texture.getImageHeight();
+    	
+    	if ( XS < XE ) {
+			x2 = XE;
+			x1 = XS;
+		}
+		else {
+			x2 = XS;
+			x1 = XE;
+		}
+		if ( YS < YE ) {
+			y2 = YE;
+			y1 = YS;
+		}
+		else {
+			y2 = YS;
+			y1 = YE;
+		}
+    	
+        
+    	Color.white.bind();
+    	
+        texture.bind(); // or GL11.glBind(texture.getTextureID());
+
+        GL11.glBegin(GL11.GL_QUADS);
+            GL11.glTexCoord2d(xsp,ysp);
+            GL11.glVertex2f(x1,y1);
+            GL11.glTexCoord2d(xep,ysp);
+            GL11.glVertex2f(x2,y1);
+            GL11.glTexCoord2d(xep,yep);
+            GL11.glVertex2f(x2,y2);
+            GL11.glTexCoord2d(xsp,yep);
+            GL11.glVertex2f(x1,y2);
+        GL11.glEnd();
+          
+    }
+}
